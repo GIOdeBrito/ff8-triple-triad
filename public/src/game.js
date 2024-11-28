@@ -6,7 +6,40 @@ window.addEventListener('load', function ()
 	start();
 });
 
-class Global
+class GUI
+{
+	static #guiObject = [];
+	static #debugMode = true;
+
+	static #isCursorInterested = false;
+
+	static addGuiObject ()
+	{
+
+	}
+
+	static get IsCursorInterested ()
+	{
+		return this.#isCursorInterested;
+	}
+
+	static set IsCursorInterested (value)
+	{
+		this.#isCursorInterested = value;
+	}
+
+	static get GuiObjects ()
+	{
+		return this.#guiObject;
+	}
+
+	static get IsDebug ()
+	{
+		return this.#debugMode;
+	}
+}
+
+class World
 {
 	static #cursorX = 0;
 	static #cursorY = 0;
@@ -50,30 +83,38 @@ function start ()
 	ResourceController.loadResources();
 
 	// Store mouse position when inside the canvas
-	getCanvas().addEventListener('mousemove', function (ev)
+	getCanvas().addEventListener('mousemove', (ev) =>
 	{
-		Global.MouseX = ev.clientX;
-		Global.MouseY = ev.clientY;
+		const coordinates = mouseToCanvasCoordenates(ev.clientX, ev.clientY);
+
+		World.MouseX = coordinates.X;
+		World.MouseY = coordinates.Y;
 	});
 
 	let funguar = new GameObject2d('testfunguar');
 	funguar.ResourceName = 'CardFunguar';
 
-	let diabalos = new GameObject2d('testdiabalos');
+	let diabalos = new GameObject2d('testdiabalos', new Point(100, 250), new Point(124, 124));
 	diabalos.ResourceName = 'CardDiabolos';
+	diabalos.OnCursor = function () { console.log('Diaasaas'); };
 
-	diabalos.Transform = new Point(100, 250);
-
-	Global.addGameObject(funguar);
-	Global.addGameObject(diabalos);
+	World.addGameObject(funguar);
+	World.addGameObject(diabalos);
 
 	gameLoop();
+}
+
+function createCards ()
+{
+	let allCards = [];
 }
 
 function gameLoop ()
 {
 	let canvas = getCanvas();
 	let ctx = canvas.getContext('2d');
+
+	ResourceController.getCards();
 
 	const mainLoop = () =>
 	{
@@ -89,36 +130,60 @@ function drawCanvas (ctx, canvas)
 {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	if(!resourceList[0]?.Image)
+	let board = ResourceController.getResource('Board');
+
+	// Stops if the board resource is null
+	if(!board)
 	{
 		return;
 	}
 
 	// Board is always at the bottom
-	ctx.drawImage(resourceList[0]?.Image, 0, 0);
+	ctx.drawImage(board.Image, 0, 0);
+
+	const drawCollision = true;
 
 	// Draw game objects
-	for(let gameObject of Global.GameObjects)
+	for(let gameObject of World.GameObjects)
 	{
 		let resource = ResourceController.getResource(gameObject.ResourceName);
 
-		// Skip if resource is not found
+		gameObject.Update();
+
+		// Skip if resource is null
 		if(!resource)
 		{
 			continue;
 		}
 
-		ctx.drawImage(resource.Image, gameObject.Transform.X, gameObject.Transform.Y);
+		let posX = gameObject.Transform.X;
+		let posY = gameObject.Transform.Y;
 
-		gameObject.Transform.X += .5;
+		ctx.drawImage(resource.Image, posX, posY);
+
+		if(drawCollision)
+		{
+			let color = window.getComputedStyle(document.body).getPropertyValue('--color-collision');
+
+			ctx.fillStyle = color;
+			ctx.fillRect(posX, posY, gameObject.BoundingBox.X, gameObject.BoundingBox.Y);
+		}
+	}
+
+	let cursor = ResourceController.getResource('Cursor');
+
+	if(GUI.IsCursorInterested)
+	{
+		cursor = ResourceController.getResource('CursorPointer');
 	}
 
 	// Cursor is drawn over everything
-	ctx.drawImage(resourceList[1]?.Image, Global.MouseX - (768 / 2), Global.MouseY - (300 / 2), 40, 40);
-}
+	ctx.drawImage(cursor.Image, World.MouseX, World.MouseY, 32, 32);
 
-function getCanvas ()
-{
-	return window['board'] ?? null;
+	if(GUI.IsDebug)
+	{
+		ctx.fillText(World.MouseX, 10, 10);
+		ctx.fillText(World.MouseY, 10, 30);
+	}
 }
 

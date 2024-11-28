@@ -1,14 +1,16 @@
 
-var resourceList = [];
 
 class ResourceController
 {
+	static #resourceList = [];
+
 	static loadResources ()
 	{
 		const toLoad =
 		[
 			new Resource('Board', 'public/triad-board.webp'),
 			new Resource('Cursor', 'public/sprites/cursor.webp'),
+			new Resource('CursorPointer', 'public/sprites/cursor-pointer.webp'),
 			new Resource('CardFunguar', 'public/sprites/cards/funguar.webp'),
 			new Resource('CardDiabolos', 'public/sprites/cards/diabolos.webp')
 		];
@@ -21,21 +23,36 @@ class ResourceController
 			{
 				item.Image = img;
 
-				resourceList.push(item);
+				this.#resourceList.push(item);
 			};
 		});
 	}
 
 	static getResource (name)
 	{
-		let index = resourceList.findIndex(item => item.Name === name);
+		let index = this.#resourceList.findIndex(item => item.Name === name);
 
 		if(index < 0)
 		{
 			return null;
 		}
 
-		return resourceList[index];
+		return this.#resourceList[index];
+	}
+
+	static getCards ()
+	{
+		let cards = this.#resourceList.filter(item =>
+		{
+			if(!item.Name.includes('Card'))
+			{
+				return;
+			}
+
+			return item;
+		});
+
+		console.log(cards);
 	}
 }
 

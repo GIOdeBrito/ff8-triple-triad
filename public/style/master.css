@@ -1,4 +1,8 @@
 
+:root {
+	--color-collision: #4f9f5491;
+}
+
 html, body {
 	margin: 0;
 	height: 100%;
@@ -17,4 +21,17 @@ main {
 canvas[name="Board"] {
 	margin: auto;
 	cursor: none;
+}
+
+article:has(div[id="WindowBox"]) {
+	display: flex;
+	flex-direction: row;
+}
+
+div[id="WindowBox"] {
+	margin: 1rem auto 0 auto;
+	height: 10%;
+	background: url('../sprites/window.webp');
+	background-position: center;
+	background-size: cover;
 }

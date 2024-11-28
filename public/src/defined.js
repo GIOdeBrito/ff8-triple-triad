@@ -39,16 +39,66 @@ class Point
 
 class GameObject2d
 {
-	#transform = Point.zero;
+	#transform;
 	#rotation = Point.zero;
+	#boundingbox;
 
 	#resource = String();
 
+	#isOnTrigger = false;
+
+	#onupdate = function () { };
+	#oncursorover = null;
+
 	#id = '';
 
-	constructor (id, x, y)
+	constructor (id, transform = null, box = null)
 	{
 		this.#id = id;
+
+		this.#transform = transform ?? Point.zero;
+		this.#boundingbox = box ?? Point.zero;
+	}
+
+	set OnUpdate (func)
+	{
+		this.#onupdate = func;
+	}
+
+	Update ()
+	{
+		if(this.#oncursorover)
+		{
+			this.CursorOverInvoke();
+		}
+
+		this.#onupdate();
+	}
+
+	set OnCursor (func)
+	{
+		this.#oncursorover = func;
+	}
+
+	CursorOverInvoke ()
+	{
+		let cursorPosX = World.MouseX;
+		let cursorPosY = World.MouseY;
+
+		// Checks if the cursor overlaps with the object
+		if(cursorPosX > this.Transform.X && cursorPosX < (this.Transform.X + this.BoundingBox.X)
+		&& cursorPosY > this.Transform.Y && cursorPosY < (this.Transform.Y + this.BoundingBox.Y))
+		{
+			this.#isOnTrigger = true;
+			this.#oncursorover();
+
+			GUI.IsCursorInterested = true;
+
+			return;
+		}
+
+		this.#isOnTrigger = false;
+		GUI.IsCursorInterested = false;
 	}
 
 	get Transform ()
@@ -69,6 +119,16 @@ class GameObject2d
 	set Rotation (value)
 	{
 		this.#rotation = value;
+	}
+
+	set BoundingBox (box)
+	{
+		this.#boundingbox = box;
+	}
+
+	get BoundingBox ()
+	{
+		return this.#boundingbox;
 	}
 
 	get ResourceName ()
