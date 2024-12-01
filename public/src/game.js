@@ -1,7 +1,8 @@
 
 import { ResourceController } from "./resources.js";
 import CardDatabase from "./card-db.js";
-import { mouseToCanvasCoordenates, getCanvas } from "./utility.js";
+import { mouseToCanvasCoordenates, getCanvas, randomMinMax } from "./utility.js";
+import { windowShowText } from "./window-box.js";
 import { Point, GameObject2d } from "./models.js";
 
 class GUI
@@ -77,8 +78,6 @@ class World
 
 function start ()
 {
-	console.log(CardDatabase.getAllCards());
-
 	// Store mouse position when inside the canvas
 	getCanvas().addEventListener('mousemove', (ev) =>
 	{
@@ -88,22 +87,28 @@ function start ()
 		World.MouseY = coordinates.Y;
 	});
 
-	let funguar = new GameObject2d('testfunguar');
-	funguar.ResourceName = 'CardFunguar';
-
-	let diabalos = new GameObject2d('testdiabalos', new Point(100, 250), new Point(124, 124));
-	diabalos.ResourceName = 'CardDiabolos';
-	diabalos.OnCursor = function () { console.log(this); };
-
-	World.addGameObject(funguar);
-	World.addGameObject(diabalos);
-
+	setCardTable();
 	gameLoop();
 }
 
-function createCards ()
+function setCardTable ()
 {
-	let allCards = [];
+	let cards = CardDatabase.getAllCards().toArray();
+
+	cards.forEach(item =>
+	{
+		let cardObject = new GameObject2d(item.Id, new Point(randomMinMax(0,740), randomMinMax(0,400)), new Point(124, 124));
+		cardObject.ResourceName = item.ResourceName;
+
+		cardObject.OnCursor = () =>
+		{
+			windowShowText(item.Name);
+		};
+
+		World.addGameObject(cardObject);
+	});
+
+	console.log(World.GameObjects);
 }
 
 function gameLoop ()
@@ -123,6 +128,7 @@ function gameLoop ()
 
 function drawCanvas (ctx, canvas)
 {
+	// Erases the canvas
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	let board = ResourceController.getResource('Board');

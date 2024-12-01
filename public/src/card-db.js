@@ -37,9 +37,16 @@ class CardDatabase
 		return new Tuple(...cards);
 	}
 
-	static getCardName (name)
+	static getCardByName (name)
 	{
 		let card = cards.find(item => item.Name === name);
+
+		return card;
+	}
+
+	static getCardById (id)
+	{
+		let card = cards.find(item => item.id === id);
 
 		return card;
 	}

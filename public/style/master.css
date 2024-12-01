@@ -34,4 +34,10 @@ div[id="WindowBox"] {
 	background: url('../sprites/window.webp');
 	background-position: center;
 	background-size: cover;
+	padding: 0 5rem;
+}
+
+div[id="WindowBox"] > p {
+	color: #fff;
+	user-select: none;
 }

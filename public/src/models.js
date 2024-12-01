@@ -56,6 +56,18 @@ class Tuple
 	{
 		return this.#count;
 	}
+
+	toArray ()
+	{
+		let items = [];
+
+		for(let i = 0; i <= this.#count; i++)
+		{
+			items.push(this['Item' + (i + 1)]);
+		}
+
+		return items;
+	}
 }
 
 class GameObject2d
@@ -118,8 +130,16 @@ class GameObject2d
 			return;
 		}
 
-		this.#isOnTrigger = false;
-		GUI.IsCursorInterested = false;
+		if(this.#isOnTrigger)
+		{
+			this.#isOnTrigger = false;
+			GUI.IsCursorInterested = false;
+		}
+	}
+
+	createProperty (name, value)
+	{
+		this[name] = value;
 	}
 
 	get Transform ()
@@ -216,9 +236,19 @@ class Card
 		this.#resource = resource;
 	}
 
+	get Id ()
+	{
+		return this.#id;
+	}
+
 	get Name ()
 	{
 		return this.#name;
+	}
+
+	get ResourceName ()
+	{
+		return this.#resource;
 	}
 
 	get Stats ()

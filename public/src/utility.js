@@ -36,6 +36,17 @@ function tryParseJson (jsonstring)
 }
 
 /**
+ * Gets a random number between a minimum and maximum range.
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
+function randomMinMax (min, max)
+{
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+/**
 * Fetch and loads the game's resources into memory.
 * @param {string} path
 * @return {object | string}
@@ -59,5 +70,6 @@ export {
 	getCanvas,
 	mouseToCanvasCoordenates,
 	tryParseJson,
+	randomMinMax,
 	httpFetch
 }
