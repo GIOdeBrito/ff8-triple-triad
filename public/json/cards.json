@@ -1,0 +1,16 @@
+[
+  {
+    "id": "card_funguar",
+    "name": "Funguar",
+    "resource_name": "CardFunguar",
+	"stats": [ "1", "2", "A", "2" ],
+	"description": "A mushroom fiend of the forests, it dances with carefree ease."
+  },
+  {
+    "id": "card_diabolos",
+    "name": "Diabolos",
+    "resource_name": "CardDiabolos",
+	"stats": [ "3", "1", "B", "6" ],
+	"description": "A mysterious entity once trapped inside a bottle, one must gather much strength and courage to face it."
+  }
+]

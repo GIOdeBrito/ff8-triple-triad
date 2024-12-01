@@ -1,10 +1,8 @@
 
-/* Triple triad game */
-
-window.addEventListener('load', function ()
-{
-	start();
-});
+import { ResourceController } from "./resources.js";
+import CardDatabase from "./card-db.js";
+import { mouseToCanvasCoordenates, getCanvas } from "./utility.js";
+import { Point, GameObject2d } from "./models.js";
 
 class GUI
 {
@@ -79,8 +77,7 @@ class World
 
 function start ()
 {
-	// Loads game resources
-	ResourceController.loadResources();
+	console.log(CardDatabase.getAllCards());
 
 	// Store mouse position when inside the canvas
 	getCanvas().addEventListener('mousemove', (ev) =>
@@ -96,7 +93,7 @@ function start ()
 
 	let diabalos = new GameObject2d('testdiabalos', new Point(100, 250), new Point(124, 124));
 	diabalos.ResourceName = 'CardDiabolos';
-	diabalos.OnCursor = function () { console.log('Diaasaas'); };
+	diabalos.OnCursor = function () { console.log(this); };
 
 	World.addGameObject(funguar);
 	World.addGameObject(diabalos);
@@ -114,8 +111,6 @@ function gameLoop ()
 	let canvas = getCanvas();
 	let ctx = canvas.getContext('2d');
 
-	ResourceController.getCards();
-
 	const mainLoop = () =>
 	{
 		drawCanvas(ctx, canvas);
@@ -132,12 +127,6 @@ function drawCanvas (ctx, canvas)
 
 	let board = ResourceController.getResource('Board');
 
-	// Stops if the board resource is null
-	if(!board)
-	{
-		return;
-	}
-
 	// Board is always at the bottom
 	ctx.drawImage(board.Image, 0, 0);
 
@@ -149,12 +138,6 @@ function drawCanvas (ctx, canvas)
 		let resource = ResourceController.getResource(gameObject.ResourceName);
 
 		gameObject.Update();
-
-		// Skip if resource is null
-		if(!resource)
-		{
-			continue;
-		}
 
 		let posX = gameObject.Transform.X;
 		let posY = gameObject.Transform.Y;
@@ -187,3 +170,8 @@ function drawCanvas (ctx, canvas)
 	}
 }
 
+export {
+	start,
+	World,
+	GUI
+}

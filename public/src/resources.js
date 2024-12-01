@@ -1,48 +1,62 @@
 
+import { Resource } from "./models.js";
+import { httpFetch, tryParseJson } from "./utility.js";
+
+var resourceList = [];
 
 class ResourceController
 {
-	static #resourceList = [];
-
-	static loadResources ()
+	/**
+	* Fetch and loads the game's resources into memory.
+	* @return {Promise<boolean>}
+	* @async
+	* @static
+	*/
+	static async loadResources ()
 	{
-		const toLoad =
-		[
-			new Resource('Board', 'public/triad-board.webp'),
-			new Resource('Cursor', 'public/sprites/cursor.webp'),
-			new Resource('CursorPointer', 'public/sprites/cursor-pointer.webp'),
-			new Resource('CardFunguar', 'public/sprites/cards/funguar.webp'),
-			new Resource('CardDiabolos', 'public/sprites/cards/diabolos.webp')
-		];
+		let response = await httpFetch('public/json/resources.json');
 
-		toLoad.forEach(item =>
+		response.forEach(item =>
 		{
+			let resource = new Resource(item.name, item.path);
+
 			let img = new Image();
-			img.src = item.Path;
+			img.src = resource.Path;
 			img.onload = () =>
 			{
-				item.Image = img;
+				resource.Image = img;
 
-				this.#resourceList.push(item);
+				resourceList.push(resource);
 			};
+		});
+
+		return new Promise(resolve =>
+		{
+			resolve(true);
 		});
 	}
 
+	/**
+	* Fetch and loads the game's resources into memory.
+	* @param {string} name - Resource name / id.
+	* @return {number}
+	* @static
+	*/
 	static getResource (name)
 	{
-		let index = this.#resourceList.findIndex(item => item.Name === name);
+		let index = resourceList.findIndex(item => item.Name === name);
 
 		if(index < 0)
 		{
 			return null;
 		}
 
-		return this.#resourceList[index];
+		return resourceList[index];
 	}
 
 	static getCards ()
 	{
-		let cards = this.#resourceList.filter(item =>
+		let cards = resourceList.filter(item =>
 		{
 			if(!item.Name.includes('Card'))
 			{
@@ -51,40 +65,9 @@ class ResourceController
 
 			return item;
 		});
-
-		console.log(cards);
 	}
 }
 
-class Resource
-{
-	#name = '';
-	#path = '';
-	#image = null;
-
-	constructor(name, path)
-	{
-		this.#name = name;
-		this.#path = path;
-	}
-
-	get Name ()
-	{
-		return this.#name;
-	}
-
-	get Path ()
-	{
-		return this.#path;
-	}
-
-	get Image ()
-	{
-		return this.#image;
-	}
-
-	set Image (img)
-	{
-		this.#image = img;
-	}
+export {
+	ResourceController,
 }

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "game_board",
+    "name": "Board",
+    "path": "public/triad-board.webp"
+  },
+  {
+	"id": "cursor1",
+	"name": "Cursor",
+    "path": "public/sprites/cursor.webp"
+  },
+  {
+	"id": "cursor2",
+	"name": "CursorPointer",
+    "path": "public/sprites/cursor-pointer.webp"
+  },
+  {
+	"id": "card_funguar",
+    "name": "CardFunguar",
+    "path": "public/sprites/cards/funguar.webp"
+  },
+  {
+	"id": "card_diabolos",
+	"name": "CardDiabolos",
+    "path": "public/sprites/cards/diabolos.webp"
+  }
+]
