@@ -49,6 +49,9 @@ class World
 	static #cursorX = 0;
 	static #cursorY = 0;
 
+	static #ismouseclicked = false;
+	static #ismousereleased = true;
+
 	static #_gameObjects = [];
 
 	static addGameObject (obj)
@@ -76,6 +79,26 @@ class World
 		this.#cursorY = value;
 	}
 
+	static get isMouseClicked ()
+	{
+		return this.#ismouseclicked;
+	}
+
+	static set isMouseClicked (value)
+	{
+		this.#ismouseclicked = value;
+	}
+
+	static get isMouseReleased ()
+	{
+		return this.#ismousereleased;
+	}
+
+	static set isMouseReleased (value)
+	{
+		this.#ismousereleased = value;
+	}
+
 	static get GameObjects ()
 	{
 		return this.#_gameObjects;
@@ -93,8 +116,36 @@ function start ()
 		World.MouseY = coordinates.Y;
 	});
 
+	getCanvas().addEventListener('mousedown', (ev) =>
+	{
+		World.isMouseClicked = true;
+		World.isMouseReleased = false;
+	});
+
+	getCanvas().addEventListener('mouseup', (ev) =>
+	{
+		World.isMouseReleased = true;
+	});
+
 	setCardTable();
 	gameLoop();
+}
+
+function gameLoop ()
+{
+	let canvas = getCanvas();
+	let ctx = canvas.getContext('2d');
+
+	const mainLoop = () =>
+	{
+		drawCanvas(ctx, canvas);
+
+		requestAnimationFrame(mainLoop);
+
+		World.isMouseClicked = false;
+	};
+
+	mainLoop();
 }
 
 function setCardTable ()
@@ -109,27 +160,21 @@ function setCardTable ()
 		cardObject.OnCursor = () =>
 		{
 			windowShowText(item.Name);
+
+			if(!World.isMouseReleased)
+			{
+				cardObject.Transform.X = World.MouseX - 124/2;
+				cardObject.Transform.Y = World.MouseY - 124/2;
+			}
+		};
+
+		cardObject.OnCursorEnter = () =>
+		{
+			//cardObject.translate(3, 0, -900);
 		};
 
 		World.addGameObject(cardObject);
 	});
-
-	console.log(World.GameObjects);
-}
-
-function gameLoop ()
-{
-	let canvas = getCanvas();
-	let ctx = canvas.getContext('2d');
-
-	const mainLoop = () =>
-	{
-		drawCanvas(ctx, canvas);
-
-		requestAnimationFrame(mainLoop);
-	};
-
-	mainLoop();
 }
 
 function drawCanvas (ctx, canvas)
