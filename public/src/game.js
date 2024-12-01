@@ -1,14 +1,15 @@
 
 import { ResourceController } from "./resources.js";
 import CardDatabase from "./card-db.js";
-import { mouseToCanvasCoordenates, getCanvas, randomMinMax } from "./utility.js";
+import { mouseToCanvasCoordenates, getCanvas, getRootVariable, randomMinMax } from "./utility.js";
 import { windowShowText } from "./window-box.js";
 import { Point, GameObject2d } from "./models.js";
 
 class GUI
 {
 	static #guiObject = [];
-	static #debugMode = true;
+	static #debugMode = false;
+	static #drawTeamBackground = true;
 
 	static #isCursorInterested = false;
 
@@ -35,6 +36,11 @@ class GUI
 	static get IsDebug ()
 	{
 		return this.#debugMode;
+	}
+
+	static isTeamBackgroundEnabled ()
+	{
+		return this.#drawTeamBackground;
 	}
 }
 
@@ -136,8 +142,6 @@ function drawCanvas (ctx, canvas)
 	// Board is always at the bottom
 	ctx.drawImage(board.Image, 0, 0);
 
-	const drawCollision = true;
-
 	// Draw game objects
 	for(let gameObject of World.GameObjects)
 	{
@@ -148,11 +152,20 @@ function drawCanvas (ctx, canvas)
 		let posX = gameObject.Transform.X;
 		let posY = gameObject.Transform.Y;
 
+		// Draw card background color
+		if(GUI.isTeamBackgroundEnabled)
+		{
+			let color = getRootVariable('--color-team-1');
+
+			ctx.fillStyle = color;
+			ctx.fillRect(posX, posY, gameObject.BoundingBox.X, gameObject.BoundingBox.Y);
+		}
+
 		ctx.drawImage(resource.Image, posX, posY);
 
-		if(drawCollision)
+		if(GUI.isDebug)
 		{
-			let color = window.getComputedStyle(document.body).getPropertyValue('--color-collision');
+			let color = getRootVariable('--color-collision');
 
 			ctx.fillStyle = color;
 			ctx.fillRect(posX, posY, gameObject.BoundingBox.X, gameObject.BoundingBox.Y);

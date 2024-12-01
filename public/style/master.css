@@ -1,6 +1,8 @@
 
 :root {
 	--color-collision: #4f9f5491;
+	--color-team-1: #32a5ea;
+	--color-team-2: #4f9f5491;
 }
 
 html, body {
@@ -10,6 +12,10 @@ html, body {
 
 body {
 	background: #000;
+}
+
+* {
+	font-family: osd-mono, sans-serif;
 }
 
 main {
@@ -26,6 +32,8 @@ canvas[name="Board"] {
 article:has(div[id="WindowBox"]) {
 	display: flex;
 	flex-direction: row;
+	width: 100%;
+	position: absolute;
 }
 
 div[id="WindowBox"] {
@@ -35,9 +43,15 @@ div[id="WindowBox"] {
 	background-position: center;
 	background-size: cover;
 	padding: 0 5rem;
+	opacity: 0;
 }
 
 div[id="WindowBox"] > p {
 	color: #fff;
 	user-select: none;
+}
+
+@font-face {
+	font-family: osd-mono;
+	src: url(../font/osd_mono.ttf);
 }

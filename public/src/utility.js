@@ -19,6 +19,16 @@ function getCanvas ()
 }
 
 /**
+* Gets the value of a CSS root variable.
+* @param {string} varname
+* @return {string | number | null}
+*/
+function getRootVariable (varname)
+{
+	return window.getComputedStyle(document.body).getPropertyValue(varname) ?? null;
+}
+
+/**
 * Attempts to parse a string into a json object.
 * @param {string} jsonstring
 * @return {object | boolean} Returns false if the string could not be parsed.
@@ -68,6 +78,7 @@ async function httpFetch (path)
 
 export {
 	getCanvas,
+	getRootVariable,
 	mouseToCanvasCoordenates,
 	tryParseJson,
 	randomMinMax,
