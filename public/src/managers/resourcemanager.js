@@ -1,10 +1,10 @@
 
-import { Resource } from "./models.js";
-import { httpFetch, tryParseJson } from "./utility.js";
+import Resource from "../models/resource.js";
+import { httpFetch, tryParseJson } from "../utility.js";
 
 var resourceList = [];
 
-class ResourceController
+class ResourceManager
 {
 	/**
 	* Fetch and loads the game's resources into memory.
@@ -68,6 +68,4 @@ class ResourceController
 	}
 }
 
-export {
-	ResourceController,
-}
+export default ResourceManager;

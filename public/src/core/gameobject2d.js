@@ -1,74 +1,7 @@
 
-import { World, GUI } from "./game.js";
-
-class Point
-{
-	#x = 0;
-	#y = 0;
-
-	constructor (x, y)
-	{
-		this.#x = x;
-		this.#y = y;
-	}
-
-	get X ()
-	{
-		return this.#x;
-	}
-
-	set X (value)
-	{
-		this.#x = value;
-	}
-
-	get Y ()
-	{
-		return this.#y;
-	}
-
-	set Y (value)
-	{
-		this.#y = value;
-	}
-
-	static get zero ()
-	{
-		return new Point(0, 0);
-	}
-}
-
-class Tuple
-{
-	#count = 0;
-
-	constructor (...params)
-	{
-		params.forEach((parameter, i) =>
-		{
-			this['Item' + (i + 1)] = parameter;
-		});
-
-		this.#count++;
-	}
-
-	get Count ()
-	{
-		return this.#count;
-	}
-
-	toArray ()
-	{
-		let items = [];
-
-		for(let i = 0; i <= this.#count; i++)
-		{
-			items.push(this['Item' + (i + 1)]);
-		}
-
-		return items;
-	}
-}
+import Point from "../models/point.js";
+import World from "../managers/world.js";
+import GUI from "../managers/gui.js";
 
 class GameObject2d
 {
@@ -202,7 +135,7 @@ class GameObject2d
 
 	#ObjectMove ()
 	{
-		
+
 	}
 
 	set OnUpdate (func)
@@ -272,102 +205,4 @@ class GameObject2d
 	}
 }
 
-class Resource
-{
-	#name = '';
-	#path = '';
-	#image = null;
-
-	constructor(name, path)
-	{
-		this.#name = name;
-		this.#path = path;
-	}
-
-	get Name ()
-	{
-		return this.#name;
-	}
-
-	get Path ()
-	{
-		return this.#path;
-	}
-
-	get Image ()
-	{
-		return this.#image;
-	}
-
-	set Image (img)
-	{
-		this.#image = img;
-	}
-}
-
-class Card
-{
-	#id = String();
-	#name = String();
-	#desc = String();
-	#resource = String();
-	#stats = Object();
-
-	constructor (id, name, resource)
-	{
-		this.#id = id;
-		this.#name = name;
-		this.#resource = resource;
-	}
-
-	get Id ()
-	{
-		return this.#id;
-	}
-
-	get Name ()
-	{
-		return this.#name;
-	}
-
-	get ResourceName ()
-	{
-		return this.#resource;
-	}
-
-	get Stats ()
-	{
-		return this.#stats;
-	}
-
-	set Stats (value)
-	{
-		const obj = {
-			top: value[0] ?? 0,
-			left: value[1] ?? 0,
-			right: value[2] ?? 0,
-			down: value[3] ?? 0,
-		};
-
-		this.#stats = obj;
-	}
-
-	get Description ()
-	{
-		return this.#desc;
-	}
-
-	set Description (value)
-	{
-		this.#desc = value;
-	}
-}
-
-export {
-	Point,
-	GameObject2d,
-	Resource,
-	Tuple,
-	Card
-}
-
+export default GameObject2d;

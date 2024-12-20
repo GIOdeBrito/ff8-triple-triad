@@ -1,10 +1,11 @@
 
-import { Card, Tuple } from "./models.js";
-import { httpFetch } from "./utility.js";
+import Card from "../models/card.js";
+import Tuple from "../helpers/tuple.js";
+import { httpFetch } from "../utility.js";
 
 var cards = [];
 
-class CardDatabase
+class CardManager
 {
 	/**
 	* Loads the cards data.
@@ -52,4 +53,5 @@ class CardDatabase
 	}
 }
 
-export default CardDatabase;
+export default CardManager;
+

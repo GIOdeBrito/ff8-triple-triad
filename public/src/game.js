@@ -1,114 +1,18 @@
 
-import { ResourceController } from "./resources.js";
-import CardDatabase from "./card-db.js";
-import { mouseToCanvasCoordenates, getCanvas, getRootVariable, randomMinMax } from "./utility.js";
-import { windowShowText } from "./window-box.js";
-import { Point, GameObject2d } from "./models.js";
-
-class GUI
-{
-	static #guiObject = [];
-	static #debugMode = false;
-	static #drawTeamBackground = true;
-
-	static #isCursorInterested = false;
-
-	static addGuiObject ()
-	{
-
-	}
-
-	static get IsCursorInterested ()
-	{
-		return this.#isCursorInterested;
-	}
-
-	static set IsCursorInterested (value)
-	{
-		this.#isCursorInterested = value;
-	}
-
-	static get GuiObjects ()
-	{
-		return this.#guiObject;
-	}
-
-	static get IsDebug ()
-	{
-		return this.#debugMode;
-	}
-
-	static isTeamBackgroundEnabled ()
-	{
-		return this.#drawTeamBackground;
-	}
-}
-
-class World
-{
-	static #cursorX = 0;
-	static #cursorY = 0;
-
-	static #ismouseclicked = false;
-	static #ismousereleased = true;
-
-	static #_gameObjects = [];
-
-	static addGameObject (obj)
-	{
-		this.#_gameObjects.push(obj);
-	}
-
-	static get MouseX ()
-	{
-		return this.#cursorX;
-	}
-
-	static set MouseX (value)
-	{
-		this.#cursorX = value;
-	}
-
-	static get MouseY ()
-	{
-		return this.#cursorY;
-	}
-
-	static set MouseY (value)
-	{
-		this.#cursorY = value;
-	}
-
-	static get isMouseClicked ()
-	{
-		return this.#ismouseclicked;
-	}
-
-	static set isMouseClicked (value)
-	{
-		this.#ismouseclicked = value;
-	}
-
-	static get isMouseReleased ()
-	{
-		return this.#ismousereleased;
-	}
-
-	static set isMouseReleased (value)
-	{
-		this.#ismousereleased = value;
-	}
-
-	static get GameObjects ()
-	{
-		return this.#_gameObjects;
-	}
-}
+import ResourceManager from "./managers/resourcemanager.js";
+import CardManager from "./managers/cardmanager.js";
+import Canvas from "./managers/canvas.js";
+import { mouseToCanvasCoordenates, getRootVariable, randomMinMax } from "./utility.js";
+import TextDialog from "./managers/textdialog.js";
+import GameObject2d from "./core/gameobject2d.js";
+import Point from "./models/point.js";
+import World from "./managers/world.js";
+import GUI from "./managers/gui.js";
 
 function start ()
 {
 	// Store mouse position when inside the canvas
-	getCanvas().addEventListener('mousemove', (ev) =>
+	Canvas.getCanvas().addEventListener('mousemove', (ev) =>
 	{
 		const coordinates = mouseToCanvasCoordenates(ev.clientX, ev.clientY);
 
@@ -116,13 +20,13 @@ function start ()
 		World.MouseY = coordinates.Y;
 	});
 
-	getCanvas().addEventListener('mousedown', (ev) =>
+	Canvas.getCanvas().addEventListener('mousedown', (ev) =>
 	{
 		World.isMouseClicked = true;
 		World.isMouseReleased = false;
 	});
 
-	getCanvas().addEventListener('mouseup', (ev) =>
+	Canvas.getCanvas().addEventListener('mouseup', (ev) =>
 	{
 		World.isMouseReleased = true;
 	});
@@ -133,12 +37,9 @@ function start ()
 
 function gameLoop ()
 {
-	let canvas = getCanvas();
-	let ctx = canvas.getContext('2d');
-
 	const mainLoop = () =>
 	{
-		drawCanvas(ctx, canvas);
+		drawCanvas(Canvas.getCtx(), Canvas.getCanvas());
 
 		requestAnimationFrame(mainLoop);
 
@@ -150,7 +51,7 @@ function gameLoop ()
 
 function setCardTable ()
 {
-	let cards = CardDatabase.getAllCards().toArray();
+	let cards = CardManager.getAllCards().toArray();
 
 	cards.forEach(item =>
 	{
@@ -159,7 +60,7 @@ function setCardTable ()
 
 		cardObject.OnCursor = () =>
 		{
-			windowShowText(item.Name);
+			TextDialog.setText(item.Name);
 
 			if(!World.isMouseReleased)
 			{
@@ -179,10 +80,9 @@ function setCardTable ()
 
 function drawCanvas (ctx, canvas)
 {
-	// Erases the canvas
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	Canvas.clear();
 
-	let board = ResourceController.getResource('Board');
+	let board = ResourceManager.getResource('Board');
 
 	// Board is always at the bottom
 	ctx.drawImage(board.Image, 0, 0);
@@ -190,7 +90,7 @@ function drawCanvas (ctx, canvas)
 	// Draw game objects
 	for(let gameObject of World.GameObjects)
 	{
-		let resource = ResourceController.getResource(gameObject.ResourceName);
+		let resource = ResourceManager.getResource(gameObject.ResourceName);
 
 		gameObject.Update();
 
@@ -217,11 +117,11 @@ function drawCanvas (ctx, canvas)
 		}
 	}
 
-	let cursor = ResourceController.getResource('Cursor');
+	let cursor = ResourceManager.getResource('Cursor');
 
 	if(GUI.IsCursorInterested)
 	{
-		cursor = ResourceController.getResource('CursorPointer');
+		cursor = ResourceManager.getResource('CursorPointer');
 	}
 
 	// Cursor is drawn over everything
@@ -235,7 +135,5 @@ function drawCanvas (ctx, canvas)
 }
 
 export {
-	start,
-	World,
-	GUI
+	start
 }

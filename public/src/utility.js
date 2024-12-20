@@ -1,8 +1,9 @@
 
+import Canvas from "./managers/canvas.js";
 
 function mouseToCanvasCoordenates (mouseX, mouseY)
 {
-	let canvas = getCanvas();
+	let canvas = Canvas.getCanvas();
 	let rect = canvas.getBoundingClientRect();
 
 	const obj = {
@@ -11,11 +12,6 @@ function mouseToCanvasCoordenates (mouseX, mouseY)
 	};
 
 	return obj;
-}
-
-function getCanvas ()
-{
-	return window['board'] ?? null;
 }
 
 /**
@@ -77,7 +73,6 @@ async function httpFetch (path)
 }
 
 export {
-	getCanvas,
 	getRootVariable,
 	mouseToCanvasCoordenates,
 	tryParseJson,
